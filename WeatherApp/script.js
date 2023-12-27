@@ -1,4 +1,4 @@
-//Setting up the HTML Elements that I will be putting data into
+// Setting up the HTML Elements that I will be putting data into
 let holder = document.querySelector(".next-7-days__container");
 let container = document.querySelector(".next-7-days__row");
 let input = document.querySelector(".inp");
@@ -8,19 +8,19 @@ let form = document.querySelector(".citySearch");
 let time = document.querySelector(".time");
 let loc = document.querySelector(".location");
 
-//Current day's weather information
+// Current day's weather information
 let temp = document.querySelector(".currentTemp");
 let condition = document.querySelector(".currentCondition");
 let icon = document.querySelector(".currentIcon");
 let high = document.querySelector(".currentHigh");
 let low = document.querySelector(".currentLow");
 let wind = document.querySelector(".currentWind");
-let rain = document.querySelector(".currentRain");
+let precipitation = document.querySelector(".currentprecipitation");
 let sunrise = document.querySelector(".currentSunrise");
 let sunset = document.querySelector(".currentSunset");
 let dayClick = document.querySelector(".location-and-date");
 
-//Hourly weather data (only for current day at the moment)
+// Hourly weather data (only for current day at the moment)
 let hourlyHolder = document.querySelector(".weather-by-hour__container");
 let hourlyContainer = document.querySelector(".weather-by-hour__item");
 let hourlyIcon = document.querySelector(".hourlyIcon");
@@ -29,31 +29,30 @@ let hourlyTemp = document.querySelector(".hourlyTemp");
 let dayValue = document.querySelector(".dayValue");
 let hourlyHeading = document.querySelector(".hourlyHeading");
 
-//Daily weather data for however many days I display
+// Daily weather data for however many days I display
 let dateDays = document.querySelector(".date");
 let weekDays = document.querySelector(".week");
 let iconDays = document.querySelector(".icon");
 let highDays = document.querySelector(".high");
 let lowDays = document.querySelector(".low");
 let windDays = document.querySelector(".wind");
-let rainDays = document.querySelector(".rain");
+let precipitationDays = document.querySelector(".precipitation");
 
 // API ID - Used to call a web service and request information to display. Very unsafe way of storing. Limited requests of 1,000 per day, no charge.
 const API = "LKZP3X7X38ZPFELNCEP27BLZL";
 
-//Declaring constants
+// Declaring constants
 const DEGREES = 22.5;
 const CARDINAL = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
-//When the application loads, everything in "load" is called.
+// When the application loads, everything in "load" is called.
 window.addEventListener("load", () => {
       userLocation();
 });
 
-//called when you submit the text field to search for a city. Checks if it's a valid city and then returns the first result of that valid name, there may be some errors
-//if the city you're searching for has a bigger city of the same name
+// Called when you submit the text field to search for a city.
 form.addEventListener("submit", e => {
-//prevents the default action from occuring, which would be submitting the form.
+// Prevents the default action from occuring, which would be submitting the form.
   e.preventDefault();
   let inputVal = input.value; //grabs input from the html page with the class inp
    fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${inputVal}/next7days?key=${API}`)
@@ -76,38 +75,38 @@ form.addEventListener("submit", e => {
 
 function todayData(data) {
 	console.log(data);
-		var utcSeconds = data.currentConditions.datetimeEpoch;
-		var d = new Date(0);
-		d.setUTCSeconds(utcSeconds);
-		time.textContent = d;
-		loc.textContent = data.resolvedAddress
-		temp.textContent = Math.round(data.currentConditions.temp) + "°F";
-		let direction = data.currentConditions.winddir;
-		for ( let i = CARDINAL.length; i >= 0; i-- ) { 
-			if ( direction < DEGREES/2 + DEGREES * i ) {
-			cardDirection = CARDINAL[i];
+	var utcSeconds = data.currentConditions.datetimeEpoch;
+	var date = new Date(0);
+	date.setUTCSeconds(utcSeconds);
+	time.textContent = date;
+	loc.textContent = data.resolvedAddress
+	temp.textContent = Math.round(data.currentConditions.temp) + "°F";
+	let direction = data.currentConditions.winddir;
+	for ( let i = CARDINAL.length; i >= 0; i-- ) { 
+		if ( direction < DEGREES/2 + DEGREES * i ) {
+		cardDirection = CARDINAL[i];
+		}
+	}
+	wind.textContent = Math.round(data.currentConditions.windspeed) + " mph " + cardDirection
+	condition.textContent = data.currentConditions.conditions
+	high.textContent = Math.round(data.days[0].tempmax) + "°F";
+	low.textContent = Math.round(data.days[0].tempmin) + "°F";
+	precipitation.textContent = Math.round(data.days[0].precipprob) + "%";
+	sunrise.textContent = data.currentConditions.sunrise.slice(0,5);
+	sunset.textContent = data.currentConditions.sunset.slice(0,5);
+	icon.innerHTML =  `<img src="https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/3rd%20Set%20-%20Color/${data.currentConditions.icon}.png"/>`;
+	dayClick.addEventListener("click", function(event){
+		let path = event.target;
+		if (path.className !== "location-and-date"){
+			while (path.className != "location-and-date") {
+				path = path.parentElement;
 			}
 		}
-		wind.textContent = Math.round(data.currentConditions.windspeed) + " mph " + cardDirection
-		condition.textContent = data.currentConditions.conditions
-		high.textContent = Math.round(data.days[0].tempmax) + "°F";
-		low.textContent = Math.round(data.days[0].tempmin) + "°F";
-		rain.textContent = Math.round(data.days[0].precipprob) + "%";
-		sunrise.textContent = data.currentConditions.sunrise.slice(0,5);
-		sunset.textContent = data.currentConditions.sunset.slice(0,5);
-		icon.innerHTML =  `<img src="https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/3rd%20Set%20-%20Color/${data.currentConditions.icon}.png"/>`;
-		dayClick.addEventListener("click", function(event){
-			let path = event.target;
-			if (path.className !== "location-and-date"){
-				while (path.className != "location-and-date") {
-					path = path.parentElement;
-				}
-			}
-			let date = new Date(data.days[0].datetime)
-			date.setDate(date.getDate() + 1)
-			hourlyHeading.textContent = `Hourly Weather for: ${data.days[0].datetime.slice(5,7) + "/" + data.days[0].datetime.slice(8,10)}`;
-			hourlyData(data,0);
-		}, false);
+		let date = new Date(data.days[0].datetime)
+		date.setDate(date.getDate() + 1)
+		hourlyHeading.textContent = `Hourly Weather for: ${data.days[0].datetime.slice(5,7) + "/" + data.days[0].datetime.slice(8,10)}`;
+		hourlyData(data,0);
+	}, false);
 }
 
 function sevenDays(data) {
@@ -128,7 +127,7 @@ function sevenDays(data) {
 		windDays.innerHTML = Math.round(data.days[i].windspeed) + " mph " + cardDirection + `<div class="next-7-days__label">Wind</div>`;
 		highDays.innerHTML = Math.round(data.days[i].tempmax) + "°F"  + `<div class="next-7-days__label">High</div>`;
 		lowDays.innerHTML = Math.round(data.days[i].tempmin) + "°F" + `<div class="next-7-days__label">Low</div>`;
-		rainDays.innerHTML = Math.round(data.days[i].precipprob) +`&percnt; <div class="next-7-days__label">Rain</div>`;
+		precipitationDays.innerHTML = Math.round(data.days[i].precipprob) +`&percnt; <div class="next-7-days__label">Precipitation</div>`;
 		iconDays.innerHTML =  `<img src="https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/3rd%20Set%20-%20Color/${data.days[i].icon}.png"/>`;
 		let clone = container.cloneNode(true);
 		clone.addEventListener("click", function(event){
@@ -146,7 +145,7 @@ function sevenDays(data) {
 	   }	
 }
 
-function hourlyData(data, i){
+function hourlyData(data, i) {
 	j = 3;
 	var dayWeather = data.days[i];
 	hourlyHolder.textContent = '';

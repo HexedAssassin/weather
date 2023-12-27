@@ -224,7 +224,7 @@
   .next-7-days__high,
   .next-7-days__low,
   .next-7-days__icon,
-  .next-7-days__rain,
+  .next-7-days__precipitation,
   .next-7-days__wind {
     width: 33.33333%;
     font-size: 0.95em;
@@ -241,7 +241,7 @@
     .next-7-days__high,
     .next-7-days__low,
     .next-7-days__icon,
-    .next-7-days__rain,
+    .next-7-days__precipitation,
     .next-7-days__wind {
       width: 16.666666%;
       margin-bottom: initial;

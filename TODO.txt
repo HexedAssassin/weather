@@ -1,0 +1,3 @@
+Create server-side functions (PHP?) that handle the api requests and send the necessary data to the client
+
+Use another api or another method of obtaining city information from client location to display city rather than coordinates

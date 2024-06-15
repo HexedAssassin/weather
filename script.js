@@ -146,26 +146,26 @@ function sevenDays(data) {
 }
 
 function hourlyData(data, i) {
-	j = 3;
+	j = 0;
 	var dayWeather = data.days[i];
 	hourlyHolder.textContent = '';
 	while (j < 24) {
-		let d = parseInt(dayWeather.hours[j].datetime.slice(0,2))
+		let d = parseInt(dayWeather.hours[j].datetime.slice(0,2))+1;
 		if (d >= 12) {
 			if (d == 12){
-				d = d + "PM"
+				d = d + " PM";
 			}
 			else{
-				d = (d - 12) + "PM"
+				d = (d - 12) + " PM";
 			}
 		}
 		else{
-			d += "AM"
+			d += " AM";
 		}
 		hourlyTime.innerHTML = d
 		hourlyIcon.innerHTML = `<img src="https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/3rd%20Set%20-%20Color/${dayWeather.hours[j].icon}.png"/>`;
 		hourlyTemp.innerHTML = Math.round(dayWeather.hours[j].temp) + "°F"
-		j += 3;
+		j += 1;
 		let clone = hourlyContainer.cloneNode(true);
 		hourlyHolder.appendChild(clone);
 	}

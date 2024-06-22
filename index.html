@@ -6,15 +6,23 @@
   <title>Weather App</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
   <link href="site.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/0e9a92b7d2.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="inputCity">
-    <form class="citySearch" action="">
-        <div class="msg"></div>
-        <input class="inp" type="text" placeholder="Search for a city" autofocus>
-        <button type="submit" class="button">Search</button>
-    </form>
+  <div class="topnav">
+    <div class="title">A Weather Channel</div>
+    <div class="inputCity">
+      <form class="citySearch" action="">
+          <div class="errMsg"></div>
+          <div class="search-container">
+            <input class="search-input" type="text" placeholder="Search City or Zip Code">
+            <button class="search-button fa-solid fa-magnifying-glass"></button>
+          </div>
+          
+      </form>
+    </div>
   </div>
+  
 <br>
 <main class="main-container">
   <div class="location-and-date"> <!--change icon size in current conditions-->
@@ -50,31 +58,18 @@
         <div class="current-stats__label">Sunset</div>
       </div>
   </div>
+
+
   <div class="weather-by-hour">
     <h2 class="weather-by-hour__heading hourlyHeading">Hourly Weather for: Today</h2>
-    <div class="weather-by-hour__container">
-      <div class="weather-by-hour__item">
-        <div class="weather-by-hour__hour hourlyTime"></div>
-        <div class="hourlyIcon"></div>
-        <div class="hourlyTemp"></div>
-      </div>
-    </div>
+    <div class="weather-by-hour__container"></div> <!--Populated with JS-->
   </div>
-  <div class="next-7-days">
-    <h2 class="next-7-days__heading">Next 7 days</h2>
-    <div class="next-7-days__container">
-      <div class="next-7-days__row" style="cursor: pointer;">
-        <input class="dayValue" type="hidden" value="0"/>
-        <div class="next-7-days__date week"></div>
-        <div class="next-7-days__high high"></div>
-        <div class="next-7-days__low low"></div>       
-        <div class="next-7-days__icon icon"></div>
-        <div class="next-7-days__precipitation precipitation"></div>
-        <div class="next-7-days__wind wind"></div>
-      </div>
-    </div>
+
+  <div class="next-8-days">
+    <h2 class="next-8-days__heading">8 Day Forcast</h2>
+    <div class="next-8-days__container"></div> <!--Populated with JS-->
   </div>
 </main>
-<script src="script.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

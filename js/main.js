@@ -26,7 +26,6 @@ let highlightTimeout;
 
 // API ID - Used to call a web service and request information to display. Very unsafe way of storing. Limited requests of 1,000 per day, no charge.
 const API = 'LKZP3X7X38ZPFELNCEP27BLZL';
-const googleAPI = 'AIzaSyAjGhGZLY0X9fSaBdP_84ZGI9YXgVy2lfs'
 
 // Declaring constants
 const DEGREES = 22.5;
@@ -308,30 +307,33 @@ function highlightItem(index) {
 // Google Geocoding
 
 function getCityName(lat,long){
-	fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${googleAPI}`)
-	.then((response) => {
-	  return response.json();
-	})
-	.then((data) => {
-		console.log("Logging Google API data:");
-		console.log(data);
-		if (data.results && data.results.length > 0){
-			let location = null;
-			for (let component of data.results[0].address_components) {
-				if (component.types.includes('locality')){
-					location = component.long_name;
-				}
-				else if (component.types.includes('administrative_area_level_1')){
-					location += ", " + component.short_name
-				}
-				else if (component.types.includes('country')){
-					location += ", " + component.long_name
-				}
-			}
-			if (location){
-				loc.textContent = location
-			}
-		}
-	 });
-	
+	const geocoder = new google.maps.Geocoder();
+	const latlng = { lat: parseFloat(lat), lng: parseFloat(long) };
+
+	geocoder.geocode({location: latlng}, (results, status) => {
+		if (status === 'OK') {
+            if (results[0]) {
+                console.log("Logging Google API data:");
+                console.log(results);
+
+                let location = null;
+                for (let component of results[0].address_components) {
+                    if (component.types.includes('locality')) {
+                        location = component.long_name;
+                    } else if (component.types.includes('administrative_area_level_1')) {
+                        location += ", " + component.short_name;
+                    } else if (component.types.includes('country')) {
+                        location += ", " + component.long_name;
+                    }
+                }
+                if (location) {
+                    loc.textContent = location;
+                }
+            } else {
+                console.log('No results found');
+            }
+        } else {
+            console.log('Geocoder failed due to: ' + status);
+        }
+	});
 }

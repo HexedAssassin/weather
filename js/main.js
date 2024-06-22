@@ -135,7 +135,6 @@ function hourlyData(data, i = 0) {
 	}
 	if (i === 0){
 		var index = findClosestNumber(nums);
-		console.log(index);
 		highlightItem(index);
 		scrollToItem(index);
 	}
@@ -260,7 +259,6 @@ function error() {
 function scrollToItem(index){
 	const items = document.querySelectorAll('.weather-by-hour__item');
 	if (index >= 0 && index < items.length){
-		console.log(items[index]);
 		items[index].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
 	}
 }

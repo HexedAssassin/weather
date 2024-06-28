@@ -1,6 +1,6 @@
 
 import { data } from './data.js';
-let useSavedData = true; // Used for testing purposes to prevent api calls on load
+let useSavedData = false; // Used for testing purposes to prevent api calls on load
 
 // Setting up the HTML Elements that I will be putting data into
 let holder = document.querySelector(".next-8-days__container");

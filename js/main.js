@@ -1,22 +1,31 @@
+
+import { data } from './data.js';
+let useSavedData = true; // Used for testing purposes to prevent api calls on load
+
 // Setting up the HTML Elements that I will be putting data into
 let holder = document.querySelector(".next-8-days__container");
-let container = document.querySelector(".next-8-days__row");
 let input = document.querySelector(".search-input");
 let msg = document.querySelector(".errMsg");
 let form = document.querySelector(".citySearch");
 let time = document.querySelector(".time");
-let loc = document.querySelector(".location");
+let loc = document.querySelector(".location-and-date__location");
+
+let tempToggle = document.querySelector(".toggleSwitch");
+let unit = "F";
 
 // Current day's weather information
 let temp = document.querySelector(".currentTemp");
+let feels = document.querySelector(".currentFeels");
 let condition = document.querySelector(".currentCondition");
 let icon = document.querySelector(".currentIcon");
 let high = document.querySelector(".currentHigh");
 let low = document.querySelector(".currentLow");
 let wind = document.querySelector(".currentWind");
-let precipitation = document.querySelector(".currentprecipitation");
+let precipitation = document.querySelector(".currentPrecipitation");
 let sunrise = document.querySelector(".currentSunrise");
 let sunset = document.querySelector(".currentSunset");
+let humidity = document.querySelector(".currentHumidity");
+let dew = document.querySelector(".currentDew");
 
 // Hourly weather data
 let hourlyHolder = document.querySelector(".weather-by-hour__container");
@@ -31,6 +40,8 @@ const API = 'LKZP3X7X38ZPFELNCEP27BLZL';
 // Declaring constants
 const DEGREES = 22.5;
 const CARDINAL = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+
+let weatherData = null;
 
 // When the application loads, everything in "load" is called.
 window.addEventListener("load", () => {
@@ -47,9 +58,8 @@ form.addEventListener("submit", e => {
 	 return response.json();
    })
    .then((data) => {
-		todayData(data);
-	 	eightDays(data);
-		hourlyData(data);
+		weatherData = data;
+		checkToggle(tempToggle.checked);
 	})
     .catch(() => { //if no city is found
       msg.textContent = "Please search for a valid city";
@@ -64,28 +74,38 @@ form.addEventListener("submit", e => {
       }, 3000);
 	  
     });
-	//clears the content so the next input is ready
+	// Clears the content so the next input is ready
   input.value = "";
   input.focus();
 });
 
-function todayData(data) { // Touch this up, combine this with hourly data
-	console.log("Logging VisualCrossing API data:");
-	console.log(data);
+function todayData(data) {
+	// console.log("Logging VisualCrossing API data:");
+	// console.log(data);
 	var utcSeconds = data.currentConditions.datetimeEpoch;
 	var date = new Date(0);
 	date.setUTCSeconds(utcSeconds);
 	time.textContent = date;
 	loc.textContent = data.resolvedAddress;
-	temp.textContent = Math.round(data.currentConditions.temp) + "°F";
-	wind.textContent = Math.round(data.currentConditions.windspeed) + " mph " + getCardinalDirection(data.currentConditions.winddir)
-	condition.textContent = data.currentConditions.conditions
-	high.textContent = Math.round(data.days[0].tempmax) + "°F";
-	low.textContent = Math.round(data.days[0].tempmin) + "°F";
-	precipitation.textContent = Math.round(data.days[0].precipprob) + "%";
+
+	temp.textContent = formatTemp(data.currentConditions.temp);
+	condition.textContent = data.currentConditions.conditions;
+	icon.innerHTML =  `<img src="https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/3rd%20Set%20-%20Color/${data.currentConditions.icon}.png"/>`;
+
+	// Current Stats
+	high.textContent = formatTemp(data.days[0].tempmax);
+	low.textContent = formatTemp(data.days[0].tempmin);
+	feels.textContent = formatTemp(data.days[0].feelslike);
+
+	
+	wind.textContent = formatSpeed(data.currentConditions.windspeed)+" "+ getCardinalDirection(data.currentConditions.winddir)
+	precipitation.textContent = Math.round(data.currentConditions.precipprob) + "%";
+	humidity.textContent = Math.round(data.currentConditions.humidity) + "%";
+	
 	sunrise.textContent = data.currentConditions.sunrise.slice(0,5);
 	sunset.textContent = data.currentConditions.sunset.slice(0,5);
-	icon.innerHTML =  `<img src="https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/PNG/3rd%20Set%20-%20Color/${data.currentConditions.icon}.png"/>`;
+	dew.textContent = formatTemp(data.currentConditions.dew);
+
 }
 
 function eightDays(data) {
@@ -134,9 +154,12 @@ function hourlyData(data, i = 0) {
 		nums.push(compare);
 	}
 	if (i === 0){
-		var index = findClosestNumber(nums);
+		var index = findClosestIndexFromEpochs(nums);
 		highlightItem(index);
 		scrollToItem(index);
+	}
+	else{
+		hourlyHolder.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
 	}
 }
 
@@ -154,7 +177,7 @@ function createHourlyElement(hourData){
 
 	 let hourlyTemp = document.createElement('div');
 	 hourlyTemp.className = 'hourlyTemp';
-	 hourlyTemp.innerHTML = Math.round(hourData.temp) + "°F";
+	 hourlyTemp.innerHTML = formatTemp(hourData.temp);
 
 	 let hourlyPrecip = document.createElement('div');
 	 hourlyPrecip.className = 'hourlyPrecip';
@@ -174,7 +197,7 @@ function createEightDaysElement(eightData){
 
 	let itemContainer = document.createElement('div');
 	itemContainer.className = 'next-8-days__row';
-	itemContainer.style = 'cursor: pointer;'
+	itemContainer.style = 'cursor: pointer;';
 
 	let id = document.createElement('input');
 	id.className = 'dayValue';
@@ -191,11 +214,11 @@ function createEightDaysElement(eightData){
 
 	let high = document.createElement("div");
 	high.className = 'next-8-days__high';
-	high.innerHTML = Math.round(eightData.high) + "°F"  + `<div class="next-8-days__label">High</div>`;
+	high.innerHTML = formatTemp(eightData.high) + `<div class="next-8-days__label">High</div>`;
 
 	let low = document.createElement("div");
 	low.className = 'next-8-days__low';
-	low.innerHTML = Math.round(eightData.low) + "°F" + `<div class="next-8-days__label">Low</div>`;
+	low.innerHTML = formatTemp(eightData.low) + `<div class="next-8-days__label">Low</div>`;
 
 	let precipProb = document.createElement("div");
 	precipProb.className = 'next-8-days__precipitation';
@@ -203,7 +226,7 @@ function createEightDaysElement(eightData){
 
 	let wind = document.createElement("div");
 	wind.className = 'next-8-days__wind';
-	wind.innerHTML = Math.round(eightData.wind) + " mph " + eightData.direction + `<div class="next-8-days__label">Wind</div>`;
+	wind.innerHTML = formatSpeed(eightData.wind) + " " + eightData.direction + `<div class="next-8-days__label">Wind</div>`;
 
 
 	itemContainer.appendChild(id);
@@ -221,12 +244,8 @@ function createEightDaysElement(eightData){
 				path = path.parentElement;
 			}
 		}
-		hourlyData(eightData.data,parseInt(path.children[0].value));
-		setTimeout(() =>{ // Still doesn't work when selecting 0 index item.
-			hourlyHolder.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-		},0);
+		hourlyData(eightData.data, parseInt(path.children[0].value));
 	}, false);
-
 	holder.appendChild(itemContainer);
 }
 
@@ -235,21 +254,28 @@ function userLocation() {
 		navigator.geolocation.getCurrentPosition(success, error);
 	}
 	else{
-		window.alert("Your browser doesn't support geolocations. Please feel free to still use the search field for weather information.")
+		window.alert("Your browser doesn't support geolocations. Please feel free to still use the search field for weather information.");
 	}
 }
 
 function success(position) {
-	fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${position.coords.latitude}%2C${position.coords.longitude}/next7days?key=${API}`) //uses latitude and longitude
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-			todayData(data);
-          	eightDays(data);
-			hourlyData(data);
-			//getCityName(data.latitude, data.longitude);
-        });
+	if (!useSavedData)
+		{
+		fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${position.coords.latitude}%2C${position.coords.longitude}/next7days?key=${API}`) //uses latitude and longitude
+			.then((response) => {
+			return response.json();
+			})
+			.then((data) => {
+				weatherData = data;
+				checkToggle(tempToggle.checked);
+				//getCityName(data.latitude, data.longitude);
+			});
+	}
+	else{
+		weatherData = data;
+		checkToggle(tempToggle.checked);
+	}
+	
 }
 
 function error() {
@@ -263,10 +289,10 @@ function scrollToItem(index){
 	}
 }
 
-function findClosestNumber(nums) {
+function findClosestIndexFromEpochs(nums) {
 	var closestNumber = 0;
 	var minDistance = Number.MAX_SAFE_INTEGER;
-	var index = 0
+	var index = 0;
 	var desiredIndex = 0;
 	for (var number of nums) {
 		var absValue = Math.abs(number);
@@ -294,14 +320,59 @@ function highlightItem(index) {
 }
 
   function getCardinalDirection(direction){
-	direction = direction % 360
-	if (direction < 0) {
-		direction += 360;
-	}
-
-	let index = Math.floor((direction + DEGREES / 2) / DEGREES)
+	direction = direction % 360;
+	let index = Math.floor((direction + DEGREES / 2) / DEGREES);
 	return CARDINAL[index];
 }
+
+tempToggle.addEventListener('change', function(){
+	checkToggle(this.checked);
+});
+
+function checkToggle(toggle){
+	if (toggle) {
+		unit = "C";
+		refreshDisplay();
+	}
+	else{
+		unit = "F";
+		refreshDisplay();
+	}
+}
+
+function refreshDisplay(){
+	todayData(weatherData);
+    eightDays(weatherData);
+    hourlyData(weatherData);
+}
+
+function formatTemp(temp){
+	if (unit === "C"){
+		return Math.round(fahrenheitToCelcius(temp)) + "°C";
+	}
+	else{
+		return Math.round(temp) + "°F";
+	}
+}
+
+function formatSpeed(mph){
+	if (unit === "C"){
+		return Math.round(mphToKph(mph)) + " kph";
+	}
+	else{
+		return Math.round(mph) + " mph";
+	}
+}
+
+function fahrenheitToCelcius(f){
+	return (f-32)*5/9;
+}
+
+function mphToKph(mph){
+	return mph*1.609
+}
+
+
 
 // Google Geocoding
 

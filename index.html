@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weather App</title>
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap" rel="stylesheet">
   <link href="site.css" rel="stylesheet">
   <script src="https://kit.fontawesome.com/0e9a92b7d2.js" crossorigin="anonymous"></script>
@@ -18,20 +19,25 @@
             <input class="search-input" type="text" placeholder="Search City or Zip Code">
             <button class="search-button fa-solid fa-magnifying-glass"></button>
           </div>
-          
       </form>
     </div>
+    <div class="tempToggle">
+      <label for="toggleSwitch" class="toggleTitle">Toggle Metric</label>
+      <label class="switch">
+        <input type="checkbox" class="toggleSwitch">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
-  
 <br>
 <main class="main-container">
   <div class="location-and-date"> <!--change icon size in current conditions-->
-    <h1 class="location-and-date__location location"></h1>
+    <h1 class="location-and-date__location"></h1>
     <div class="time"></div>
   </div>
     <div class="current-temperature">
       <div class="current-temperature__icon-container">
-        <div class="current-temperature__icon currentIcon" alt=""></div>
+        <div class="current-temperature__icon currentIcon"></div>
       </div>
       <div class="current-temperature__content-container">
         <div class="current-temperature__value currentTemp"></div>
@@ -43,33 +49,39 @@
         <div class="current-stats__value currentHigh"></div>
         <div class="current-stats__label">High</div>        
         <div class="current-stats__value currentLow"></div>
-        <div class="current-stats__label">Low</div>        
+        <div class="current-stats__label">Low</div>
+        <div class="current-stats__value currentFeels"></div>
+        <div class="current-stats__label">Feels Like</div>
       </div>
       <div>
         <div class="current-stats__value currentWind"></div>
         <div class="current-stats__label">Wind</div>
-        <div class="current-stats__value currentprecipitation"></div>
+        <div class="current-stats__value currentPrecipitation"></div>
         <div class="current-stats__label">Precipitation</div>
+        <div class="current-stats__value currentHumidity"></div>
+        <div class="current-stats__label">Humidity</div>
       </div>
       <div>
         <div class="current-stats__value currentSunrise"></div>
         <div class="current-stats__label">Sunrise</div>
         <div class="current-stats__value currentSunset"></div>
         <div class="current-stats__label">Sunset</div>
+        <div class="current-stats__value currentDew"></div>
+        <div class="current-stats__label">Dew Point</div>
       </div>
   </div>
 
 
   <div class="weather-by-hour">
-    <h2 class="weather-by-hour__heading hourlyHeading">Hourly Weather for: Today</h2>
-    <div class="weather-by-hour__container"></div> <!--Populated with JS-->
+    <h2 class="weather-by-hour__heading hourlyHeading">Hourly Weather for: Today</h2><!--Populated with JS-->
+    <div class="weather-by-hour__container"></div> 
   </div>
 
   <div class="next-8-days">
-    <h2 class="next-8-days__heading">8 Day Forcast</h2>
-    <div class="next-8-days__container"></div> <!--Populated with JS-->
+    <h2 class="next-8-days__heading">8 Day Forcast</h2><!--Populated with JS-->
+    <div class="next-8-days__container"></div> 
   </div>
 </main>
-<script src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

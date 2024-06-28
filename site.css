@@ -21,6 +21,9 @@
     background-color: rgb(25, 25, 100);
     overflow: hidden;
     padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .title{
@@ -37,7 +40,8 @@
     width: 100%;
   }
   .inputCity {
-    display: inline-block;
+    display: flex;
+    flex: 1;
     width: 25%;
   }
 
@@ -50,7 +54,7 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px 40px;
   border: 2px solid #ccc;
   border-radius: 25px;
   font-size: 16px;
@@ -103,7 +107,65 @@
     }
   }
   
+  /* temp toggle */
+
+  .tempToggle{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    padding-top: 5px;
+  }
+  .switch {
+    margin-left: 10px;
+    margin-right: 0;
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
   
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+
+
+
+
   /* location-and-date */ 
   .location-and-date {
     width: 100%;

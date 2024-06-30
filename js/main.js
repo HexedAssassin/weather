@@ -1,7 +1,3 @@
-
-import { data } from './data.js';
-let useSavedData = false; // Used for testing purposes to prevent api calls on load
-
 // Setting up the HTML Elements that I will be putting data into
 let holder = document.querySelector(".next-8-days__container");
 let input = document.querySelector(".search-input");
@@ -259,23 +255,15 @@ function userLocation() {
 }
 
 function success(position) {
-	if (!useSavedData)
-		{
-		fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${position.coords.latitude}%2C${position.coords.longitude}/next7days?key=${API}`) //uses latitude and longitude
-			.then((response) => {
-			return response.json();
-			})
-			.then((data) => {
-				weatherData = data;
-				checkToggle(tempToggle.checked);
-				//getCityName(data.latitude, data.longitude);
-			});
-	}
-	else{
-		weatherData = data;
-		checkToggle(tempToggle.checked);
-	}
-	
+	fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${position.coords.latitude}%2C${position.coords.longitude}/next7days?key=${API}`) //uses latitude and longitude
+		.then((response) => {
+		return response.json();
+		})
+		.then((data) => {
+			weatherData = data;
+			checkToggle(tempToggle.checked);
+			//getCityName(data.latitude, data.longitude);
+		});
 }
 
 function error() {

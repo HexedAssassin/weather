@@ -16,6 +16,7 @@
   }
 
   .topnav {
+    flex-wrap: wrap;
     position: relative;
     text-align: center;
     background-color: rgb(25, 25, 100);
@@ -40,6 +41,7 @@
     width: 100%;
   }
   .inputCity {
+    order: 2;
     display: flex;
     flex: 1;
     width: 25%;
@@ -110,6 +112,7 @@
   /* temp toggle */
 
   .tempToggle{
+    order: 3;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -164,6 +167,38 @@
   }
 
 
+  @media screen and (max-width: 768px) {
+    .topnav {
+      flex-direction: column; /* Stack items vertically on small screens */
+      align-items: center;
+    }
+  
+    .title {
+      order: 1; /* Position the title at the top */
+      margin-bottom: 10px;
+      position: relative;
+      left: 0px;
+      top: 10px;
+      transform: 0;
+      font-size: 20px;
+      font-weight: bold;
+      display: inline-block;
+    }
+    .inputCity {
+      order: 2; /* Position the search bar below the title */
+      width: 100%; /* Full width for the search bar */
+      max-width: 90%;
+      padding: 0 16px; /* Add padding for better spacing */
+      margin-bottom: 10px;
+    }
+  
+    .tempToggle {
+      order: 3; /* Position the toggle switch below the search bar */
+      justify-content: center; /* Center the toggle switch */
+      width: 100%;
+      padding: 10px 0; /* Add padding for better spacing */
+    }
+  }
 
 
   /* location-and-date */ 
@@ -320,19 +355,22 @@
     font-size: 1.125em;
     text-align: center;
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 8px;
     scroll-snap-align: center;
   }
   
-  @media screen and (min-width: 880px) {
+  @media screen and (max-width: 700px) {
     .weather-by-hour__item {
-      width: 200px;
-      flex: 0 0 200px;
+      padding: 0.5em 0;
+      width: 120px;
+      flex: 0 0 120px;
+      font-size: 0.875em;
+      margin-right: 8px;
     }
   }
   
   .weather-by-hour__hour {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.3em;
   }
   
   
